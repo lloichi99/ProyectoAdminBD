@@ -65,7 +65,7 @@ public class JTableAl extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        Tabla = new javax.swing.JTable();
+        Tabla4 = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -135,7 +135,7 @@ public class JTableAl extends javax.swing.JFrame {
 
         jButton3.setText("Eliminar");
 
-        Tabla.setModel(new javax.swing.table.DefaultTableModel(
+        Tabla4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -146,7 +146,7 @@ public class JTableAl extends javax.swing.JFrame {
                 "NO_CONTROL", "ID_GENERO", "ID_CARRERA", "NOMBRE", "APELLIDO_PATERNO ", "APELLIDO_MATERNO", "CORREO", "TELEFONO"
             }
         ));
-        jScrollPane2.setViewportView(Tabla);
+        jScrollPane2.setViewportView(Tabla4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -330,7 +330,7 @@ public class JTableAl extends javax.swing.JFrame {
             st = conec.createStatement();
             rs = st.executeQuery(sql);
             Object[] alumnos = new Object[8];
-            modelo =(DefaultTableModel)Tabla.getModel();
+            modelo =(DefaultTableModel)Tabla4.getModel();
             while(rs.next()){
                 alumnos[0]= rs.getInt("NO_CONTROL");
                 alumnos[1]=rs.getInt("ID_GENERO");
@@ -343,7 +343,7 @@ public class JTableAl extends javax.swing.JFrame {
                 
                 modelo.addRow(alumnos);
             }
-            Tabla.setModel(modelo);
+            Tabla4.setModel(modelo);
             
         }catch(Exception e){
         }
@@ -387,7 +387,7 @@ public class JTableAl extends javax.swing.JFrame {
 
     
     void limpiarTabla(){
-        for(int i= 0; i <= Tabla.getRowCount();i++){
+        for(int i= 0; i <= Tabla4.getRowCount();i++){
             modelo.removeRow(i);
             i = i-1;
         }
@@ -396,7 +396,7 @@ public class JTableAl extends javax.swing.JFrame {
        
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable Tabla;
+    private javax.swing.JTable Tabla4;
     private javax.swing.JComboBox<String> cmbIdCarrera;
     private javax.swing.JComboBox<String> cmbIdGenero;
     private javax.swing.JButton jButton1;

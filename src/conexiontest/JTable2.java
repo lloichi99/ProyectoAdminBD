@@ -53,6 +53,8 @@ public class JTable2 extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -128,6 +130,14 @@ public class JTable2 extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Buscar:");
+
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -150,12 +160,17 @@ public class JTable2 extends javax.swing.JFrame {
                                     .addComponent(jLabel3))
                                 .addGap(23, 23, 23)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtNomCar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(txtNomCar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(54, 54, 54)
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(204, 204, 204)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGap(55, 55, 55))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -169,7 +184,9 @@ public class JTable2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -251,6 +268,35 @@ public class JTable2 extends javax.swing.JFrame {
                 salir.setVisible(true);
                 setVisible(false);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+          // EVENTO KEY TYPED de la caja de texto buscar                                   
+    String nom_car = txtBuscar.getText();
+    
+    // Debes usar PreparedStatement para evitar problemas de seguridad y consultas SQL inseguras.
+    String checkIDQuery = "SELECT * FROM carrera WHERE NOMBRE LIKE ?";
+    
+    try {
+        conec = con.getConnection();
+        PreparedStatement pstmt = conec.prepareStatement(checkIDQuery);
+        // Utiliza '%' para buscar cualquier descripción que contenga la cadena ingresada.
+        pstmt.setString(1, "%" + nom_car + "%");
+        ResultSet rs = pstmt.executeQuery();
+
+        // Ahora debes actualizar la tabla con los resultados de la búsqueda.
+        DefaultTableModel modelo = (DefaultTableModel) Tabla1.getModel();
+        modelo.setRowCount(0); // Limpia la tabla antes de mostrar los resultados.
+
+        while (rs.next()) {
+            // Agrega cada fila de resultado a la tabla.
+            Object[] fila = {rs.getString("ID_CARRERA"), rs.getString("NOMBRE")};
+            modelo.addRow(fila);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        // Maneja las excepciones adecuadamente.
+    }
+    }//GEN-LAST:event_txtBuscarKeyTyped
 
     void Modificar(){
         String id_car = txtIdCarrera.getText();
@@ -449,10 +495,12 @@ public class JTable2 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtIdCarrera;
     private javax.swing.JTextField txtNomCar;
     // End of variables declaration//GEN-END:variables
