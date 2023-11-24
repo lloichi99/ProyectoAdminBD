@@ -6,6 +6,8 @@ package conexiontest;
 
 
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -317,12 +319,22 @@ public class JTable extends javax.swing.JFrame {
             txtDesc.setText(desc);
         }
         
-        
+       Tabla.addMouseListener(new MouseAdapter() {
+    public void mouseClicked(MouseEvent e) {
+        int filaSeleccionada = Tabla.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            // Aquí puedes deshabilitar el campo de "ID Genero"
+            txtIdGen.setEnabled(false);
+        }
+    }
+});
+ 
     }//GEN-LAST:event_TablaMouseClicked
 
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // BOTON DE MODIFICAR
+   
         Modificar();
         consultar();
         limpiarCampos();
@@ -377,7 +389,8 @@ public class JTable extends javax.swing.JFrame {
     }
         
     }//GEN-LAST:event_txtBuscarKeyTyped
-
+    
+    
     void Modificar(){
         String id_gen = txtIdGen.getText();
         String desc = txtDesc.getText();
@@ -471,6 +484,11 @@ public class JTable extends javax.swing.JFrame {
     
     
     void agregar() {
+        
+    
+            // Aquí puedes deshabilitar el campo de "ID Genero"
+    txtIdGen.setEnabled(true);
+      
     String id_gen = txtIdGen.getText();
     String desc = txtDesc.getText();
 

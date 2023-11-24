@@ -4,6 +4,8 @@
  */
 package conexiontest;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -250,6 +252,16 @@ public class JTable3 extends javax.swing.JFrame {
                 txtIdEstado.setText(""+id_estado);
                 txtEstado.setText(estado_queja);
          }
+         
+          Tabla3.addMouseListener(new MouseAdapter() {
+    public void mouseClicked(MouseEvent e) {
+        int filaSeleccionada = Tabla3.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            // Aquí puedes deshabilitar el campo de "ID Genero"
+            txtIdEstado.setEnabled(false);
+        }
+    }
+}); 
     }//GEN-LAST:event_Tabla3MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -408,6 +420,9 @@ public class JTable3 extends javax.swing.JFrame {
     
     
     void agregar() {
+    
+    txtIdEstado.setEnabled(true);    
+        
     String id_estado = txtIdEstado.getText();
     String estado_queja = txtEstado.getText();
 

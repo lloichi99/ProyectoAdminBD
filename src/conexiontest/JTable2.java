@@ -4,6 +4,8 @@
  */
 package conexiontest;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -245,6 +247,16 @@ public class JTable2 extends javax.swing.JFrame {
                 txtIdCarrera.setText(""+id_car);
                 txtNomCar.setText(nom_car);
          }
+         
+        Tabla1.addMouseListener(new MouseAdapter() {
+    public void mouseClicked(MouseEvent e) {
+        int filaSeleccionada = Tabla1.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            // Aquí puedes deshabilitar el campo de "ID Genero"
+            txtIdCarrera.setEnabled(false);
+        }
+    }
+}); 
     }//GEN-LAST:event_Tabla1MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -403,6 +415,10 @@ public class JTable2 extends javax.swing.JFrame {
     } 
     
      void agregar() {
+    
+    txtIdCarrera.setEnabled(true);
+           
+         
     String id_car = txtIdCarrera.getText();
     String nom_car = txtNomCar.getText();
 
