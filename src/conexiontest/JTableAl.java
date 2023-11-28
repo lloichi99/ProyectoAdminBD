@@ -4,10 +4,13 @@
  */
 package conexiontest;
 
+
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author joyce
  */
+
 public class JTableAl extends javax.swing.JFrame {
 
     Conexion con= new Conexion();
@@ -22,7 +26,76 @@ public class JTableAl extends javax.swing.JFrame {
     DefaultTableModel modelo;
     Statement st;
     ResultSet rs;
-    int idc; 
+    int idc;
+    private List<GeneroItem> listaGenero = new ArrayList<>();
+    private List<CarreraItem> listaCarrera = new ArrayList<>();
+
+    
+
+   private void llenarComboBoxGenero() {
+    String sql = "SELECT ID_GENERO, DESCRIPCION FROM genero";
+    try {
+        conec = con.getConnection();
+        st = conec.createStatement();
+        rs = st.executeQuery(sql);
+
+        // Limpiar el ComboBox antes de agregar nuevos elementos
+        cmbIdGenero.removeAllItems();
+
+        // Limpiar la lista de la clase antes de llenarla
+        this.listaGenero.clear();
+
+        while (rs.next()) {
+            int idGenero = rs.getInt("ID_GENERO");
+            String descripcion = rs.getString("DESCRIPCION");
+
+            // Crear un objeto GeneroItem y agregarlo a la lista de la clase
+            GeneroItem generoItem = new GeneroItem(idGenero, descripcion);
+            this.listaGenero.add(generoItem);
+
+            // Agregar solo la descripción al ComboBox
+            cmbIdGenero.addItem(descripcion);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+private void llenarComboBoxCarrera() {
+    String sql = "SELECT ID_CARRERA, NOMBRE FROM carrera";
+    try {
+        conec = con.getConnection();
+        st = conec.createStatement();
+        rs = st.executeQuery(sql);
+
+        // Limpiar el ComboBox antes de agregar nuevos elementos
+        cmbIdCarrera.removeAllItems();
+
+        // Limpiar la lista de la clase antes de llenarla
+        this.listaCarrera.clear();
+
+        while (rs.next()) {
+            int idCarrera = rs.getInt("ID_CARRERA");
+            String nombre = rs.getString("NOMBRE");
+
+            // Crear un objeto CarreraItem y agregarlo a la lista de la clase
+            CarreraItem carreraItem = new CarreraItem(idCarrera, nombre);
+            this.listaCarrera.add(carreraItem);
+
+            // Agregar solo la descripción al ComboBox
+            cmbIdCarrera.addItem(nombre);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+    
+   
+
+
     
     /**
      * Creates new form JTableAl
@@ -32,6 +105,16 @@ public class JTableAl extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         consultar();
         
+        // Llenar JComboBox con datos de la tabla "genero"
+        llenarComboBoxGenero();
+        llenarComboBoxCarrera();
+        
+         // Agregar el escuchador de eventos a la tabla
+    Tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            TablaMouseClicked(evt);
+        }
+    });
     }
 
     /**
@@ -84,7 +167,7 @@ public class JTableAl extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Alumnos ");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -99,6 +182,12 @@ public class JTableAl extends javax.swing.JFrame {
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNombreActionPerformed(evt);
+            }
+        });
+
+        txtNoControl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNoControlActionPerformed(evt);
             }
         });
 
@@ -140,6 +229,11 @@ public class JTableAl extends javax.swing.JFrame {
         });
 
         jButton3.setText("Eliminar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         Tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -149,9 +243,14 @@ public class JTableAl extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "NO_CONTROL", "ID_GENERO", "ID_CARRERA", "NOMBRE", "APELLIDO_PATERNO ", "APELLIDO_MATERNO", "CORREO", "TELEFONO"
+                "NO_CONTROL", "ID_GENERO", "ID_CARRERA", "NOMBRE", "APELLIDO_PATERNO ", "APELLLIDO_MATERNO", "CORREO", "TELEFONO"
             }
         ));
+        Tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TablaMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(Tabla);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -161,100 +260,100 @@ public class JTableAl extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(203, 203, 203)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNoControl, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel9)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(cmbIdGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(jLabel7)
-                                                    .addComponent(jLabel3))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addGap(0, 0, Short.MAX_VALUE)
-                                                        .addComponent(cmbIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(0, 0, Short.MAX_VALUE)))))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel8)
-                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jLabel2)
-                                                .addComponent(jLabel6)))))
-                                .addGap(18, 18, 18)
+                                .addGap(10, 10, 10)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                                    .addComponent(txtApMaterno)
-                                    .addComponent(txtApPaterno)
-                                    .addComponent(txtNombre)))))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(txtNoControl, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(13, 13, 13))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel7)
+                                                .addComponent(jLabel4)
+                                                .addComponent(jLabel3))
+                                            .addGap(162, 162, 162)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbIdGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(12, 12, 12)))
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel2))))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtApPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtApMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(116, 116, 116)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(183, 183, 183)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
+                        .addGap(14, 14, 14)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 763, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
+                        .addGap(64, 64, 64)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNoControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addComponent(jLabel2)
                             .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(24, 24, 24)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(cmbIdGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(txtApPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel8)
-                            .addComponent(txtApMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)
-                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cmbIdCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtApMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addGap(27, 27, 27))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1)))
-                .addGap(69, 69, 69)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel9)
+                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(107, 107, 107))
+                .addGap(36, 36, 36))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -263,13 +362,13 @@ public class JTableAl extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 5, Short.MAX_VALUE))
         );
 
         pack();
@@ -280,7 +379,9 @@ public class JTableAl extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        // Boton modificar
+        Modificar();
+        consultar();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -291,17 +392,141 @@ public class JTableAl extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cmbIdGeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbIdGeneroActionPerformed
-        // COMBOX DE ID_GENERO
-        sql = "select * from genero";
-        try{
-        conec = con.getConnection();
-        st = conec.createStatement();
-        rs = st.executeQuery(sql);
-        
-        
-        }catch(Exception e){
-        }
+    
     }//GEN-LAST:event_cmbIdGeneroActionPerformed
+
+    private void TablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaMouseClicked
+    
+        // Aquí puedes deshabilitar el campo de "ID Genero"
+        txtNoControl.setEnabled(false);
+    // Obtener el índice de la fila seleccionada
+    int selectedRow = Tabla.getSelectedRow();
+    
+    // Verificar si hay una fila seleccionada
+    if (selectedRow != -1) {
+        // Obtener datos de la fila seleccionada
+        String noControl = Tabla.getValueAt(selectedRow, 0).toString();
+        String idGenero = Tabla.getValueAt(selectedRow, 1).toString();
+        String idCarrera = Tabla.getValueAt(selectedRow, 2).toString();
+        String nombre = Tabla.getValueAt(selectedRow, 3).toString();
+        String apPaterno = Tabla.getValueAt(selectedRow, 4).toString();
+        String apMaterno = Tabla.getValueAt(selectedRow, 5).toString();
+        String correo = Tabla.getValueAt(selectedRow, 6).toString();
+        String telefono = Tabla.getValueAt(selectedRow, 7).toString();
+
+        
+        // Actualizar los campos de texto y los combo boxes
+        txtNoControl.setText(noControl);
+        txtNombre.setText(nombre);
+        txtApPaterno.setText(apPaterno);
+        txtApMaterno.setText(apMaterno);
+        txtCorreo.setText(correo);
+        txtTelefono.setText(telefono);
+        
+        
+         // Actualizar los combo boxes seleccionando el índice correspondiente
+        int indexGenero = obtenerIndiceGenero(idGenero);
+        int indexCarrera = obtenerIndiceCarrera(idCarrera);
+
+        cmbIdGenero.setSelectedIndex(indexGenero);
+        cmbIdCarrera.setSelectedIndex(indexCarrera);
+            
+    }
+       
+    }
+// Método para obtener el índice de un elemento en la lista de carreras
+private int obtenerIndiceCarrera(String idCarrera) {
+    for (int i = 0; i < listaCarrera.size(); i++) {
+        if (String.valueOf(listaCarrera.get(i).getIdCarrera()).equals(idCarrera)) {
+            return i;
+        }
+    }
+    return -1; // Si no se encuentra, devolver -1
+    }//GEN-LAST:event_TablaMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // Boton eliminar
+        eliminar();
+        consultar();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void txtNoControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoControlActionPerformed
+        // TODO add your handling code here:
+         try {
+        // Obtener el ID ingresado como texto
+        String idNoControl = txtNoControl.getText();
+        
+        // Verificar si el texto es un número entero
+        if (idNoControl.matches("\\d+")) {
+            // Convertir el texto a un número entero
+            int noControl = Integer.parseInt(idNoControl);
+            
+            // Llamar al método para consultar y cargar datos por ID
+            consultarNoControl(noControl);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ingrese un número entero válido como ID de usuario.");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Error al convertir el ID de usuario a número.");
+    }
+    }//GEN-LAST:event_txtNoControlActionPerformed
+
+    
+   private void consultarNoControl(int noControl) {
+    try {
+        String sql = "SELECT * FROM alumnos WHERE NO_CONTROL = ?";
+        conec = con.getConnection();
+
+        try (PreparedStatement pstmt = conec.prepareStatement(sql)) {
+            pstmt.setInt(1, noControl);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String nombre = rs.getString("NOMBRE");
+                String apPaterno = rs.getString("APELLIDO_PATERNO");
+                String apMaterno = rs.getString("APELLIDO_MATERNO");
+                String correo = rs.getString("CORREO");
+                String telefono = rs.getString("TELEFONO");
+                String idGenero = rs.getString("ID_GENERO");
+                String idCarrera = rs.getString("ID_CARRERA");
+
+                // Actualizar los campos de texto y los combo boxes
+                txtNoControl.setText(Integer.toString(noControl));
+                txtNombre.setText(nombre);
+                txtApPaterno.setText(apPaterno);
+                txtApMaterno.setText(apMaterno);
+                txtCorreo.setText(correo);
+                txtTelefono.setText(telefono);
+
+                // Actualizar los combo boxes seleccionando el índice correspondiente
+                int indexGenero = obtenerIndiceGenero(idGenero);
+                int indexCarrera = obtenerIndiceCarrera(idCarrera);
+
+                cmbIdGenero.setSelectedIndex(indexGenero);
+                cmbIdCarrera.setSelectedIndex(indexCarrera);
+                
+                
+              
+            } else {
+                JOptionPane.showMessageDialog(null, "Alumno no encontrado");
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+    
+  // Método para obtener el índice de un elemento en la lista de géneros
+private int obtenerIndiceGenero(String idGenero) {
+    for (int i = 0; i < listaGenero.size(); i++) {
+        if (String.valueOf(listaGenero.get(i).getIdGenero()).equals(idGenero)) {
+            return i;
+        }
+    }
+    return -1; // Si no se encuentra, devolver -1
+}
+
 
     /**
      * @param args the command line arguments
@@ -353,81 +578,214 @@ public class JTableAl extends javax.swing.JFrame {
     }
 }
 
-    
-    
-    
-   
-    void agregar(){
+ 
+    void agregar() {
         
+    // Aquí puedes deshabilitar el campo de "ID Genero"
+        txtNoControl.setEnabled(true);    
         
-        
-        //lista del variables a utilizar 
-       String no_control = txtNoControl.getText();
-       int id_gen = 0;
-       int id_carrera = 0;      
-       String nombre = txtNombre.getText();
-       String ap_paterno =  txtApPaterno.getText();
-       String ap_materno = txtApMaterno.getText();
-       String correo = txtCorreo.getText();
-       String tel = txtTelefono.getText();
-     
-       try{
-           if(no_control.equals("") || nombre.equals("") || ap_paterno.equals("") || ap_materno.equals("") || correo.equals("") || tel.equals("") || id_gen== 0 || id_carrera ==0){
+    String no_control = txtNoControl.getText();
+    String descripcionGenero = cmbIdGenero.getSelectedItem().toString();
+    int idGeneroSeleccionado = obtenerIdGenero(descripcionGenero);
+    String nombreCarrera = cmbIdCarrera.getSelectedItem().toString();
+    int idCarreraSeleccionada = obtenerIdCarrera(nombreCarrera);
+    String nombre = txtNombre.getText();
+    String ap_paterno = txtApPaterno.getText();
+    String ap_materno = txtApMaterno.getText();
+    String correo = txtCorreo.getText();
+    String tel = txtTelefono.getText();
+
+    try {
+        if (no_control.equals("") || nombre.equals("") || ap_paterno.equals("") || ap_materno.equals("") || correo.equals("") || tel.equals("") || idGeneroSeleccionado == 0 || idCarreraSeleccionada == 0) {
             JOptionPane.showMessageDialog(null, "Faltan ingresar datos en la tabla");
-               
-           }else{
-               
-            //Verificar si el No de CONTROL ya existe
-            String checkIDQuery = "SELECT COUNT (*) FROM alumnos WHERE NO_CONTROL=?";
+        } else {
+            // Verificar si el No de CONTROL ya existe
+            String checkIDQuery = "SELECT COUNT(*) FROM alumnos WHERE NO_CONTROL=?";
             conec = con.getConnection();
             PreparedStatement checkIDStatement = conec.prepareStatement(checkIDQuery);
             checkIDStatement.setString(1, no_control);
             ResultSet rs = checkIDStatement.executeQuery();
             rs.next();
             int rowCount = rs.getInt(1);
-            
-            if(rowCount > 0){
+
+            if (rowCount > 0) {
                 JOptionPane.showMessageDialog(null, "Este numero de control ya existe");
                 limpiarTabla();
-            
-             }else{
-               String insertQuery = "insert into alumnos(NO_CONTROL,ID_GENERO,ID_CARRERA,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,CORREO,TELEFONO) VALUEs(?,?,?,?,?,?,?,?)";
-               
-                //id_gen = Integer.parseInt(cmbIdGenero.getSelectedItem().);
-                //id_carrera = Integer.parseInt(cmbIdCarrera.getSelectedItem());
-                // Inserción de datos
-               
-                PreparedStatement insertStatement = conec.prepareStatement(insertQuery);
-                insertStatement.setString(1, no_control);
-                //insertStatement.setString(2, id_gen);
-                //insertStatement.setString(3,id_carrera);
-                insertStatement.setString(4, nombre);
-                insertStatement.setString(5, ap_paterno);
-                insertStatement.setString(6,ap_materno);
-                insertStatement.setString(7,correo);
-                insertStatement.setString(8,tel);
-                JOptionPane.showMessageDialog(null, "nuevo alumno registrado");
-                limpiarTabla();
-           }
-           }
-       }catch(Exception e){
-       
-       }
-       
-       }
-       
-    
+            } else {
+                String insertQuery = "INSERT INTO alumnos(NO_CONTROL, ID_GENERO, ID_CARRERA, NOMBRE, APELLIDO_PATERNO, APELLLIDO_MATERNO, CORREO, TELEFONO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    void Modificar(){
-        
+                try (PreparedStatement insertStatement = conec.prepareStatement(insertQuery)) {
+                    insertStatement.setString(1, no_control);
+                    insertStatement.setInt(2, idGeneroSeleccionado);
+                    insertStatement.setInt(3, idCarreraSeleccionada);
+                    insertStatement.setString(4, nombre);
+                    insertStatement.setString(5, ap_paterno);
+                    insertStatement.setString(6, ap_materno);
+                    insertStatement.setString(7, correo);
+                    insertStatement.setString(8, tel);
+
+                    int rowsAffected = insertStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        JOptionPane.showMessageDialog(null, "Nuevo alumno registrado");
+                        limpiarTabla();
+                        limpiarCampos();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al intentar agregar el alumno");
+                    }
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al intentar agregar el alumno: " + e.getMessage());
+    } finally {
+        try {
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-     
+}
+
+        
+    private int obtenerIdCarrera(String nombreCarrera) {
+    for (CarreraItem carreraItem : listaCarrera) {
+        if (carreraItem.getNombre().equals(nombreCarrera)) {
+            return carreraItem.getIdCarrera();
+        }
+    }
+    return 0;
+}
+
+private int obtenerIdGenero(String descripcionGenero) {
+    for (GeneroItem generoItem : listaGenero) {
+        if (generoItem.getDescripcion().equals(descripcionGenero)) {
+            return generoItem.getIdGenero();
+        }
+    }
+    return 0;
+}
+
+void Modificar() {
+    String no_control = txtNoControl.getText();
+    String descripcionGenero = cmbIdGenero.getSelectedItem().toString();
+    int idGeneroSeleccionado = obtenerIdGenero(descripcionGenero);
+    String nombreCarrera = cmbIdCarrera.getSelectedItem().toString();
+    int idCarreraSeleccionada = obtenerIdCarrera(nombreCarrera);
+    String nombre = txtNombre.getText();
+    String ap_paterno = txtApPaterno.getText();
+    String ap_materno = txtApMaterno.getText();
+    String correo = txtCorreo.getText();
+    String tel = txtTelefono.getText();
+
+    try {
+        if (no_control.equals("") || nombre.equals("") || ap_paterno.equals("") || ap_materno.equals("") || correo.equals("") || tel.equals("") || idGeneroSeleccionado == 0 || idCarreraSeleccionada == 0) {
+            JOptionPane.showMessageDialog(null, "Faltan ingresar datos en la tabla");
+            limpiarTabla();
+        } else {
+            String checkIDQuery = "SELECT COUNT(*) FROM alumnos WHERE NO_CONTROL=?";
+            conec = con.getConnection();
+            try (PreparedStatement checkIDStatement = conec.prepareStatement(checkIDQuery)) {
+                checkIDStatement.setString(1, no_control);
+                try (ResultSet rs = checkIDStatement.executeQuery()) {
+                    rs.next();
+                    int rowCount = rs.getInt(1);
+
+                    if (rowCount == 0) {
+                        JOptionPane.showMessageDialog(null, "El número de control que deseas modificar no existe");
+                        limpiarTabla();
+                    } else {
+                        String updateQuery = "UPDATE alumnos SET ID_GENERO=?, ID_CARRERA=?, NOMBRE=?, APELLIDO_PATERNO=?, APELLLIDO_MATERNO=?, CORREO=?, TELEFONO=? WHERE NO_CONTROL=?";
+
+                        try (PreparedStatement pstmt = conec.prepareStatement(updateQuery)) {
+                            pstmt.setInt(1, idGeneroSeleccionado);
+                            pstmt.setInt(2, idCarreraSeleccionada);
+                            pstmt.setString(3, nombre);
+                            pstmt.setString(4, ap_paterno);
+                            pstmt.setString(5, ap_materno);
+                            pstmt.setString(6, correo);
+                            pstmt.setString(7, tel);
+                            pstmt.setString(8, no_control);
+                            pstmt.executeUpdate();
+
+                            JOptionPane.showMessageDialog(null, "Datos del alumno modificados exitosamente");
+                            limpiarCampos();
+                            consultar();
+                        }
+                    }
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al intentar modificar el alumno: " + e.getMessage());
+    } finally {
+        try {
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+  
+    void eliminar() {
+    int fila = Tabla.getSelectedRow();
+
+    try {
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada para eliminar");
+        } else {
+            int noControl = Integer.parseInt(Tabla.getValueAt(fila, 0).toString()); // Utiliza la columna del No_Control
+
+            // Verificar si existen registros relacionados en la tabla "genero"
+            String checkControlQuery = "SELECT COUNT(*) FROM quejas WHERE NO_CONTROL = ?";
+            conec = con.getConnection();
+
+            try (PreparedStatement checkControlStatement = conec.prepareStatement(checkControlQuery)) {
+                checkControlStatement.setInt(1, noControl);
+                ResultSet rs = checkControlStatement.executeQuery();
+                rs.next();
+                int rowCountNo = rs.getInt(1);
+
+                
+
+                    if (rowCountNo > 0) {
+                        JOptionPane.showMessageDialog(null, "No se puede eliminar el alumno, hay registros de la tabla genero relacionados.");
+                    }else {
+                        // No hay registros relacionados, proceder con la eliminación
+                        String deleteQuery = "DELETE FROM alumnos WHERE NO_CONTROL = ?";
+                        try (PreparedStatement deleteStatement = conec.prepareStatement(deleteQuery)) {
+                            deleteStatement.setInt(1, noControl);
+                            deleteStatement.executeUpdate();
+                            JOptionPane.showMessageDialog(null, "Alumno eliminado con éxito");
+                            limpiarTabla();
+                        }
+                    }
+            }
+        }
+    } catch (Exception e) {
+        // Manejar excepciones
+        e.printStackTrace();
+    }
+}
+
+
    void limpiarTabla() {
     DefaultTableModel modelo = (DefaultTableModel) Tabla.getModel();
     modelo.setRowCount(0); // Esto elimina todas las filas de la tabla
     }
         
+    void limpiarCampos() {
+    txtNoControl.setText("");
+    txtNombre.setText("");
+    txtApPaterno.setText("");
+    txtApMaterno.setText("");
+    txtCorreo.setText("");
+    txtTelefono.setText("");
     
+    } 
     
    
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -50,11 +50,9 @@ public class JTable extends javax.swing.JFrame {
         datos = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         txtIdGen = new javax.swing.JTextField();
         txtDesc = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtBuscar = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -85,9 +83,6 @@ public class JTable extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Id_genero:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Buscar:");
-
         txtIdGen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdGenActionPerformed(evt);
@@ -103,17 +98,6 @@ public class JTable extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Descripcion:");
 
-        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBuscarActionPerformed(evt);
-            }
-        });
-        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtBuscarKeyTyped(evt);
-            }
-        });
-
         javax.swing.GroupLayout datosLayout = new javax.swing.GroupLayout(datos);
         datos.setLayout(datosLayout);
         datosLayout.setHorizontalGroup(
@@ -123,21 +107,16 @@ public class JTable extends javax.swing.JFrame {
                     .addGroup(datosLayout.createSequentialGroup()
                         .addGap(220, 220, 220)
                         .addComponent(jLabel1))
-                    .addGroup(datosLayout.createSequentialGroup()
-                        .addGroup(datosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(datosLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtIdGen, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, datosLayout.createSequentialGroup()
-                                .addGap(95, 95, 95)
-                                .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(113, Short.MAX_VALUE))
+                    .addGroup(datosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(datosLayout.createSequentialGroup()
+                            .addGap(15, 15, 15)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtIdGen, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, datosLayout.createSequentialGroup()
+                            .addGap(95, 95, 95)
+                            .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(241, Short.MAX_VALUE))
             .addGroup(datosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(datosLayout.createSequentialGroup()
                     .addGap(16, 16, 16)
@@ -152,9 +131,7 @@ public class JTable extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(datosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtIdGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2))
                 .addGap(29, 29, 29)
                 .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -355,40 +332,6 @@ public class JTable extends javax.swing.JFrame {
                 salir.setVisible(true);
                 setVisible(false);
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBuscarActionPerformed
-
-    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
-        // EVENTO KEY TYPED de la caja de texto buscar                                   
-    String descripcion = txtBuscar.getText();
-    
-    // Debes usar PreparedStatement para evitar problemas de seguridad y consultas SQL inseguras.
-    String checkIDQuery = "SELECT * FROM genero WHERE DESCRIPCION LIKE ?";
-    
-    try {
-        conec = con.getConnection();
-        PreparedStatement pstmt = conec.prepareStatement(checkIDQuery);
-        // Utiliza '%' para buscar cualquier descripción que contenga la cadena ingresada.
-        pstmt.setString(1, "%" + descripcion + "%");
-        ResultSet rs = pstmt.executeQuery();
-
-        // Ahora debes actualizar la tabla con los resultados de la búsqueda.
-        DefaultTableModel modelo = (DefaultTableModel) Tabla.getModel();
-        modelo.setRowCount(0); // Limpia la tabla antes de mostrar los resultados.
-
-        while (rs.next()) {
-            // Agrega cada fila de resultado a la tabla.
-            Object[] fila = {rs.getString("ID_GENERO"), rs.getString("DESCRIPCION")};
-            modelo.addRow(fila);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        // Maneja las excepciones adecuadamente.
-    }
-        
-    }//GEN-LAST:event_txtBuscarKeyTyped
     
     
     void Modificar(){
@@ -594,14 +537,12 @@ public class JTable extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtDesc;
     private javax.swing.JTextField txtIdGen;
     // End of variables declaration//GEN-END:variables
